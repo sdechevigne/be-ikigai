@@ -165,7 +165,14 @@ const noJsMessage =
   import { quizContent, CODE_TO_SLUG } from "../../data/quiz";
   import type { Lang, ProfilCode } from "../../data/quiz";
   import { scoreQuiz } from "./scoring";
-  import { fourCirclesSvg } from "./fourCircles";
+
+  // Diagramme Ikigai dédié par profil (mêmes images que la page de résultat partageable).
+  const CODE_TO_DIAGRAM: Record<ProfilCode, string> = {
+    A: "/assets/img/quizz/ikigai_cage_doree.png",
+    B: "/assets/img/quizz/ikigai_ideealiste_epuise.png",
+    C: "/assets/img/quizz/ikigai_page_blanche.png",
+    D: "/assets/img/quizz/ikigai_fragmente.png",
+  };
 
   const EDGE_FUNCTION_URL =
     "https://aeobrpxjmecbvdeqjbvc.supabase.co/functions/v1/quiz-submit";
@@ -450,7 +457,7 @@ const noJsMessage =
           <p class="text-lg italic text-bleu-crepuscule/80 mb-6">« ${esc(profil.tagline)} »</p>
           <p class="text-base text-bleu-crepuscule/90 mb-8 max-w-xl mx-auto">${esc(profil.miniPortrait)}</p>
 
-          <div class="flex justify-center mb-6">${fourCirclesSvg(result.dominant, lang)}</div>
+          <div class="flex justify-center mb-6"><img src="${CODE_TO_DIAGRAM[result.dominant]}" alt="${esc(profil.nom)}" class="w-full max-w-md h-auto" loading="lazy" width="2040" height="1560" /></div>
           <p class="text-base text-bleu-crepuscule/90 mb-6 max-w-xl mx-auto">${esc(profil.reveal)}</p>
           <div class="text-left max-w-md mx-auto mb-10 bg-beige-chaleureux/40 rounded-2xl p-5">
             ${fortsHtml}${faiblesHtml}
