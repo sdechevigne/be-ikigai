@@ -4,6 +4,14 @@ import Navbar from './Navbar.astro';
 import Footer from './Footer.astro';
 import BookingModal from './BookingModal.astro';
 import { getLangFromUrl } from '../i18n/utils';
+import {
+  releases,
+  SPOTIFY_ARTIST_ID,
+  APPLE_ARTIST_URL,
+  DEEZER_ARTIST_URL,
+  AMAZON_ARTIST_URL,
+  YOUTUBE_CHANNEL_URL,
+} from '../data/music';
 
 const lang = getLangFromUrl(Astro.url);
 const isFR = lang === 'fr';
@@ -11,239 +19,116 @@ const isFR = lang === 'fr';
 const t = {
   fr: {
     pageTitle: 'Musique | be-ikigai',
-    pageDesc: 'Playlists et compilations musicales by be-ikigai — Celtic, Ambient, Deep House, Dubstep. Laissez-vous porter.',
+    pageDesc:
+      'Les albums et titres originaux de be-ikigai. Écoutez le catalogue complet sur Spotify, Apple Music, Deezer et Amazon Music.',
     heroKicker: 'Musique',
     heroTitle: 'Ici, la musique devient le chemin vers ton ikigai',
-    heroSubtitle: 'Compilations et playlists composées pour accompagner ton chemin — travail profond, méditation, énergie.',
-    playOn: 'Écouter sur',
-    watchAll: 'Voir toute la chaîne',
-    filterAll: 'Tous',
-    filterAmbient: 'Ambient & Détente',
-    filterEnergy: 'Énergie',
-    filterCeltic: 'Celtic & Fantasy',
-    filterOriginal: 'Originaux',
-    filterCoaching: 'Coaching',
+    heroSubtitle:
+      'Des titres écrits et composés pour accompagner ton chemin. Tout le catalogue be-ikigai, à écouter directement ici.',
+    listenOn: 'Écouter sur',
+    playerTitle: 'Le lecteur',
+    playerHint:
+      'Tout le catalogue be-ikigai dans un seul lecteur. Choisis une sortie plus bas pour la charger ici.',
+    discography: 'La discographie',
+    discographyHint: '28 sorties, des albums complets aux titres seuls.',
+    filterAll: 'Tout',
+    filterAlbums: 'Albums',
+    filterSingles: 'Titres seuls',
+    filterPop: 'Pop',
+    filterRock: 'Rock',
+    filterElectro: 'Électro',
+    filterFolk: 'Folk',
+    albumLabel: 'Album',
+    singleLabel: 'Titre',
+    tracks: 'titres',
+    listen: 'Écouter',
+    onApple: 'Sur Apple Music',
+    loadInPlayer: 'Charger dans le lecteur',
+    ctaTitle: 'Envie d’aller plus loin que la musique ?',
+    ctaText:
+      'La musique ouvre la porte. Le bilan ikigai, lui, trace le chemin. On en parle lors d’un appel découverte.',
+    ctaButton: 'Réserver un appel',
   },
   en: {
     pageTitle: 'Music | be-ikigai',
-    pageDesc: 'Music playlists and compilations by be-ikigai — Celtic, Ambient, Deep House, Dubstep. Let yourself be carried away.',
+    pageDesc:
+      'The albums and original tracks by be-ikigai. Listen to the full catalogue on Spotify, Apple Music, Deezer and Amazon Music.',
     heroKicker: 'Music',
     heroTitle: 'Here, music becomes the path to your ikigai',
-    heroSubtitle: 'Compilations and playlists crafted to accompany your journey — deep work, meditation, energy.',
-    playOn: 'Listen on',
-    watchAll: 'View full channel',
+    heroSubtitle:
+      'Tracks written and composed to accompany your journey. The whole be-ikigai catalogue, playable right here.',
+    listenOn: 'Listen on',
+    playerTitle: 'The player',
+    playerHint:
+      'The whole be-ikigai catalogue in a single player. Pick a release below to load it here.',
+    discography: 'Discography',
+    discographyHint: '28 releases, from full albums to standalone tracks.',
     filterAll: 'All',
-    filterAmbient: 'Ambient & Relaxation',
-    filterEnergy: 'Energy',
-    filterCeltic: 'Celtic & Fantasy',
-    filterOriginal: 'Originals',
-    filterCoaching: 'Coaching',
+    filterAlbums: 'Albums',
+    filterSingles: 'Singles',
+    filterPop: 'Pop',
+    filterRock: 'Rock',
+    filterElectro: 'Electronic',
+    filterFolk: 'Folk',
+    albumLabel: 'Album',
+    singleLabel: 'Single',
+    tracks: 'tracks',
+    listen: 'Listen',
+    onApple: 'On Apple Music',
+    loadInPlayer: 'Load in player',
+    ctaTitle: 'Want to go further than the music?',
+    ctaText:
+      'Music opens the door. The ikigai assessment maps the road. Let’s talk it through on a discovery call.',
+    ctaButton: 'Book a call',
   },
 }[lang];
 
-const tracks = [
-  // ── Compilations longues ──
-  {
-    title: 'Relaxing Medieval & Celtic Music',
-    videoId: 'VuFxFN8xH7s',
-    duration: '47:18',
-    category: 'celtic',
-    tag: isFR ? 'Celtic & Fantasy' : 'Celtic & Fantasy',
-    description: isFR
-      ? 'Voyagez dans des contrées imaginaires au son des cornemuses, harpes et flûtes celtiques.'
-      : 'Travel to imaginary lands with bagpipes, harps, and celtic flutes.',
-  },
-  {
-    title: 'Inspiring Motivational Dubstep',
-    videoId: '4KY9WATrMQ4',
-    duration: '41:12',
-    category: 'energy',
-    tag: isFR ? 'Énergie' : 'Energy',
-    description: isFR
-      ? 'Des basses puissantes et des drops explosifs pour booster ta concentration et ton énergie.'
-      : 'Powerful bass and explosive drops to boost your focus and energy.',
-  },
-  {
-    title: 'Ambient Music · Tropical Chillout · Electro & Grooves',
-    videoId: 'B4UO151AKiA',
-    duration: '25:45',
-    category: 'ambient',
-    tag: isFR ? 'Ambient & Détente' : 'Ambient & Relaxation',
-    description: isFR
-      ? 'Grooves ensoleillés et vibrations électroniques pour un moment de légèreté et de fluidité.'
-      : 'Sun-drenched grooves and electronic vibes for moments of lightness and flow.',
-  },
-  {
-    title: 'Audiophile Great Voices Collection — Hi-Res',
-    videoId: 'R2NFasSgO2U',
-    duration: '38:01',
-    category: 'ambient',
-    tag: isFR ? 'Ambient & Détente' : 'Ambient & Relaxation',
-    description: isFR
-      ? 'Une sélection de voix exceptionnelles en qualité haute résolution, pour écouter autrement.'
-      : 'A selection of exceptional voices in high-resolution quality, for a different listening experience.',
-  },
-  {
-    title: 'Deep House · Punchy Songs · Mix 2025',
-    videoId: '41IhrT_u8uY',
-    duration: '51:28',
-    category: 'energy',
-    tag: isFR ? 'Énergie' : 'Energy',
-    description: isFR
-      ? 'Un mix de Deep House percutant pour travailler en flow ou commencer la journée avec puissance.'
-      : 'A punchy Deep House mix to work in flow or start your day with power.',
-  },
-  {
-    title: 'Relaxing Celtic Music · Fantasy, Celtic, Folk',
-    videoId: 'SPfgK9e8VKk',
-    duration: '34:46',
-    category: 'celtic',
-    tag: isFR ? 'Celtic & Fantasy' : 'Celtic & Fantasy',
-    description: isFR
-      ? 'Folk doux et mélodies celtiques apaisantes pour la détente, la lecture ou la méditation.'
-      : 'Gentle folk and soothing celtic melodies for relaxation, reading, or meditation.',
-  },
-  // ── Originaux & titres ──
-  {
-    title: "I Lost Her, But I'll Choose to Love Again",
-    videoId: 'j8hl7NL_Ibw',
-    duration: '3:40',
-    category: 'original',
-    tag: isFR ? 'Original' : 'Original',
-    description: isFR
-      ? 'Un titre original be-ikigai — entre douceur et résilience.'
-      : 'An original be-ikigai track — between tenderness and resilience.',
-  },
-  {
-    title: "I Won't Give In",
-    videoId: 'OejloB3hEVc',
-    duration: '3:32',
-    category: 'original',
-    tag: isFR ? 'Original' : 'Original',
-    description: isFR
-      ? 'La force tranquille de celui qui refuse de lâcher — un anthem de détermination.'
-      : 'The quiet strength of someone who refuses to give up — an anthem of determination.',
-  },
-  {
-    title: isFR ? '18 octobre 2025' : 'October 18, 2025',
-    videoId: 'dAarJeh48rw',
-    duration: '3:01',
-    category: 'original',
-    tag: isFR ? 'Original' : 'Original',
-    description: isFR
-      ? 'Une création du 18 octobre 2025 — captée dans l\'instant.'
-      : 'A creation from October 18, 2025 — caught in the moment.',
-  },
-  // ── Coaching & inspiration ──
-  {
-    title: isFR
-      ? "Ce n'est plus la peine, c'est de la colère — Nouvel Album"
-      : "Beyond Pain, There's Anger — New Album",
-    videoId: 'IJRWlBmLNY0',
-    duration: '1:21',
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'Quand la douleur se transforme en énergie. Extrait du nouvel album be-ikigai.'
-      : 'When pain transforms into energy. Excerpt from the new be-ikigai album.',
-  },
-  {
-    title: isFR ? '30 octobre 2025' : 'October 30, 2025',
-    videoId: 'U49_Ict7QHw',
-    duration: '1:21',
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'Un message du 30 octobre — une pensée, une intention.'
-      : 'A message from October 30 — a thought, an intention.',
-  },
-  {
-    title: isFR
-      ? 'Je crée ma carte de vie : Trouver son Ikigaï et se révéler'
-      : 'Creating My Life Map: Finding Your Ikigai',
-    videoId: 'ib-kJcKC8W8',
-    duration: '1:01',
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'La carte de vie comme outil de clarté — identifier ses forces, sa voie, son ikigaï.'
-      : 'The life map as a clarity tool — identify your strengths, your path, your ikigai.',
-  },
-  {
-    title: isFR
-      ? 'Vous avez tout pour être heureux… mais vous vous sentez vide ? La cage dorée'
-      : 'The Golden Cage: Why Success Feels Empty',
-    videoId: 'Q4L81hgnSo0',
-    duration: '1:30',
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'Avoir tout sans se sentir vivant — le paradoxe de la cage dorée expliqué.'
-      : 'Having everything without feeling alive — the golden cage paradox explained.',
-  },
-  {
-    title: isFR
-      ? 'Allez, courage… Si je ne change pas maintenant, je vais couler.'
-      : "Come on, courage… If I don't change now, I'll sink.",
-    videoId: '7QFk41IWWXk',
-    duration: '0:36',
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'Le déclic. La prise de conscience. Le moment où tout peut basculer.'
-      : 'The click. The realization. The moment when everything can shift.',
-  },
-  {
-    title: isFR ? 'Redécouvrez votre véritable soi' : 'Rediscover Your True Self',
-    videoId: 'ziZa_Notsmk',
-    duration: null,
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'Se reconnecter à soi-même — au-delà des masques et des attentes.'
-      : 'Reconnecting with yourself — beyond masks and expectations.',
-  },
-  {
-    title: isFR
-      ? 'The Golden Cage: Why Success Feels Empty (And What To Do About It)'
-      : 'The Golden Cage: Why Success Feels Empty (And What To Do About It)',
-    videoId: 'SiNh9RaUxgI',
-    duration: null,
-    category: 'coaching',
-    tag: isFR ? 'Coaching' : 'Coaching',
-    description: isFR
-      ? 'La version anglaise — pour ceux qui cherchent leur chemin au-delà du succès.'
-      : 'Success without meaning — and how ikigai can change that.',
-  },
-];
+const featured = releases.find((r) => r.appleId === 1848669645) ?? releases[0];
 
 const platformLinks = [
   {
-    name: 'YouTube',
-    href: 'https://www.youtube.com/@beikigai',
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
-  },
-  {
     name: 'Spotify',
-    href: 'https://open.spotify.com/artist/02cB5srMHjSZIGvaX2SOwm',
+    href: `https://open.spotify.com/artist/${SPOTIFY_ARTIST_ID}`,
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>`,
   },
   {
-    name: 'Deezer',
-    href: 'https://www.deezer.com/search/beikigai',
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M18.944 16.888H24v2.222h-5.056zm0-4.61H24v2.222h-5.056zm0-4.61H24v2.222h-5.056zM0 20.833h5.055v-2.222H0zm6.361 0h5.056v-2.222H6.361zm6.361 0H18v-2.222h-5.278zm-6.36-4.61h5.055v-2.222H6.361zm6.361 0H18v-2.222h-5.278zm-6.36-4.61h5.055V9.39H6.361zm6.361 0H18V9.39h-5.278z"/></svg>`,
-  },
-  {
     name: 'Apple Music',
-    href: 'https://music.apple.com/artist/be-ikigai/1843626775',
+    href: APPLE_ARTIST_URL,
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M23.994 6.124a9.23 9.23 0 0 0-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 0 0-1.877-.726 10.496 10.496 0 0 0-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026C4.786.07 4.043.15 3.34.428 2.004.958 1.04 1.88.475 3.208a4.98 4.98 0 0 0-.35 1.358c-.059.384-.1.769-.124 1.155-.008.098-.01.198-.01.297v13.944c0 .09.002.18.008.27.017.356.05.712.115 1.064.17.93.543 1.763 1.157 2.47a4.93 4.93 0 0 0 2.745 1.618c.484.11.977.163 1.472.178.13.005.26.007.39.007h13.028c.13 0 .259-.002.389-.007.518-.016 1.033-.076 1.534-.209a4.912 4.912 0 0 0 3.087-2.554c.287-.612.437-1.265.497-1.936.024-.268.036-.537.036-.807V6.142c0-.006-.001-.013-.001-.018zm-5.474 5.616a.747.747 0 0 1-.334.626l-7.26 4.605c-.155.098-.33.147-.502.147-.167 0-.337-.047-.488-.142a1.01 1.01 0 0 1-.487-.872V5.896c0-.36.196-.693.51-.866a.994.994 0 0 1 1.005.04l7.26 4.605a.749.749 0 0 1 .296.065z"/></svg>`,
   },
   {
+    name: 'Deezer',
+    href: DEEZER_ARTIST_URL,
+    icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M18.944 16.888H24v2.222h-5.056zm0-4.61H24v2.222h-5.056zm0-4.61H24v2.222h-5.056zM0 20.833h5.055v-2.222H0zm6.361 0h5.056v-2.222H6.361zm6.361 0H18v-2.222h-5.278zm-6.36-4.61h5.055v-2.222H6.361zm6.361 0H18v-2.222h-5.278zm-6.36-4.61h5.055V9.39H6.361zm6.361 0H18V9.39h-5.278z"/></svg>`,
+  },
+  {
     name: 'Amazon Music',
-    href: 'https://music.amazon.com/artists/B0FTMNPT41/be-ikigai',
+    href: AMAZON_ARTIST_URL,
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M13.958 10.09c0 1.232.029 2.256-.591 3.351-.502.891-1.301 1.438-2.186 1.438-1.214 0-1.922-.924-1.922-2.292 0-2.692 2.415-3.182 4.7-3.182v.685zm3.186 7.705c-.209.189-.512.201-.745.074-1.052-.872-1.238-1.276-1.814-2.106-1.734 1.767-2.962 2.297-5.209 2.297-2.66 0-4.731-1.641-4.731-4.925 0-2.565 1.391-4.309 3.37-5.164 1.715-.754 4.11-.891 5.942-1.095v-.41c0-.753.06-1.642-.383-2.294-.385-.579-1.124-.82-1.775-.82-1.205 0-2.277.618-2.54 1.897-.054.285-.261.567-.549.582l-3.061-.333c-.259-.056-.548-.266-.472-.66.704-3.716 4.06-4.838 7.066-4.838 1.537 0 3.547.41 4.758 1.574 1.538 1.436 1.392 3.352 1.392 5.438v4.923c0 1.481.616 2.13 1.192 2.929.204.287.247.63-.01.839-.647.541-1.794 1.537-2.423 2.099l-.008-.007zm3.559 1.988c-2.748 1.472-5.735 2.181-8.453 2.181-4.027 0-7.927-1.393-11.081-3.706-.277-.202-.481.154-.251.416 2.925 3.326 6.786 5.326 11.076 5.326 3.061 0 6.614-1.214 9.066-3.494.406-.377.058-.945-.357-.723zm.67 2.216c-.091.227.104.32.31.147 1.339-1.12 1.685-3.466 1.411-3.804-.272-.336-2.612-.626-4.04.377-.22.154-.182.367.062.337.805-.096 2.595-.312 2.913.098.319.41-.355 2.094-.656 2.845z"/></svg>`,
   },
+  {
+    name: 'YouTube',
+    href: YOUTUBE_CHANNEL_URL,
+    icon: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+  },
 ];
+
+const filters = [
+  { key: 'all', label: t.filterAll },
+  { key: 'albums', label: t.filterAlbums },
+  { key: 'singles', label: t.filterSingles },
+  { key: 'pop', label: t.filterPop },
+  { key: 'rock', label: t.filterRock },
+  { key: 'electro', label: t.filterElectro },
+  { key: 'folk', label: t.filterFolk },
+];
+
+const dateFormatter = new Intl.DateTimeFormat(isFR ? 'fr-FR' : 'en-GB', {
+  year: 'numeric',
+  month: 'long',
+});
+
+const pricingUrl = isFR ? '/tarifs' : '/en/pricing';
 ---
 
 <Layout
@@ -256,7 +141,7 @@ const platformLinks = [
   <Navbar lang={lang} />
 
   <!-- Hero -->
-  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden bg-[#1a2535]">
+  <section class="relative flex items-center justify-center overflow-hidden bg-[#1a2535]">
     <div class="absolute inset-0 overflow-hidden">
       <div class="music-blob music-blob-1"></div>
       <div class="music-blob music-blob-2"></div>
@@ -264,7 +149,7 @@ const platformLinks = [
     </div>
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: url(data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E);"></div>
 
-    <div class="relative z-10 text-center px-6 py-28 max-w-4xl mx-auto">
+    <div class="relative z-10 text-center px-6 pt-28 pb-16 max-w-4xl mx-auto">
       <p class="text-[#ffd700] font-comfortaa text-sm tracking-[0.25em] uppercase mb-5 opacity-90">{t.heroKicker}</p>
       <h1 class="font-comfortaa text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
         {t.heroTitle}
@@ -280,6 +165,7 @@ const platformLinks = [
             href={p.href}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`${t.listenOn} ${p.name}`}
             class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/80 hover:border-[#ffd700] hover:text-[#ffd700] transition-all duration-200 text-sm backdrop-blur-sm bg-white/5"
           >
             <span set:html={p.icon} />
@@ -290,116 +176,136 @@ const platformLinks = [
     </div>
   </section>
 
-  <!-- Tracks section -->
-  <section class="bg-[#1a2535] py-20 px-6">
-    <div class="max-w-7xl mx-auto">
-
-      <!-- Filter tabs -->
-      <div class="flex flex-wrap gap-2 justify-center mb-12" id="music-filters">
-        <button data-filter="all" class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterAll}</button>
-        <button data-filter="ambient" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterAmbient}</button>
-        <button data-filter="energy" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterEnergy}</button>
-        <button data-filter="celtic" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterCeltic}</button>
-        <button data-filter="original" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterOriginal}</button>
-        <button data-filter="coaching" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">{t.filterCoaching}</button>
+  <!-- Lecteur -->
+  <section class="bg-[#1a2535] px-6 pb-20">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="font-comfortaa text-2xl md:text-3xl font-bold text-white mb-3">{t.playerTitle}</h2>
+        <p class="text-white/50 text-sm md:text-base max-w-xl mx-auto">{t.playerHint}</p>
       </div>
 
-      <!-- Cards grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="tracks-grid">
-        {tracks.map((track) => (
-          <article
-            class="track-card group relative rounded-2xl overflow-hidden bg-[#243044] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#ffd700]/5"
-            data-category={track.category}
-            data-video-id={track.videoId}
+      <div class="rounded-2xl overflow-hidden border border-white/10 bg-[#243044] shadow-2xl">
+        <iframe
+          id="spotify-player"
+          data-artist-id={SPOTIFY_ARTIST_ID}
+          title="Spotify be-ikigai"
+          src={`https://open.spotify.com/embed/album/${featured.spotifyAlbumId}?utm_source=generator&theme=0`}
+          width="100%"
+          height="480"
+          style="border: 0;"
+          loading="lazy"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        ></iframe>
+      </div>
+
+      <p class="text-center text-white/30 text-xs mt-4">
+        {isFR
+          ? 'Connecte-toi à Spotify pour écouter les titres en entier.'
+          : 'Sign in to Spotify to play full-length tracks.'}
+      </p>
+    </div>
+  </section>
+
+  <!-- Discographie -->
+  <section class="bg-[#1a2535] px-6 pb-24">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="font-comfortaa text-2xl md:text-3xl font-bold text-white mb-3">{t.discography}</h2>
+        <p class="text-white/50 text-sm md:text-base">{t.discographyHint}</p>
+      </div>
+
+      <!-- Filtres -->
+      <div class="flex flex-wrap gap-2 justify-center mb-12" id="music-filters">
+        {filters.map((f, i) => (
+          <button
+            type="button"
+            data-filter={f.key}
+            class:list={['filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-200', { active: i === 0 }]}
           >
-            <!-- Thumbnail -->
-            <div class="relative aspect-video overflow-hidden">
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <!-- Grille -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5" id="releases-grid">
+        {releases.map((release) => (
+          <article
+            class="release-card group relative rounded-2xl overflow-hidden bg-[#243044] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#ffd700]/5 flex flex-col"
+            data-category={release.category}
+            data-kind={release.isAlbum ? 'albums' : 'singles'}
+            data-spotify-album={release.spotifyAlbumId ?? ''}
+          >
+            <!-- Pochette -->
+            <div class="relative aspect-square overflow-hidden">
               <img
-                src={`https://i.ytimg.com/vi/${track.videoId}/hqdefault.jpg`}
-                alt={track.title}
+                src={release.artwork}
+                alt={release.title}
+                width="600"
+                height="600"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-[#243044] via-transparent to-transparent opacity-60"></div>
-              <!-- Play overlay -->
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <div class="w-14 h-14 rounded-full bg-[#ffd700] flex items-center justify-center shadow-lg shadow-[#ffd700]/40 transition-transform duration-200 group-hover:scale-110">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#243044] via-transparent to-transparent opacity-50"></div>
+
+              <button
+                type="button"
+                class="play-btn absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 outline-none"
+                aria-label={`${t.loadInPlayer} : ${release.title}`}
+              >
+                <span class="w-14 h-14 rounded-full bg-[#ffd700] flex items-center justify-center shadow-lg shadow-[#ffd700]/40 transition-transform duration-200 group-hover:scale-110">
                   <svg class="w-6 h-6 text-[#1a2535] ml-1" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
-                </div>
-              </div>
-              <!-- Duration badge -->
-              {track.duration && (
-                <div class="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/70 text-white text-xs font-mono backdrop-blur-sm">
-                  {track.duration}
-                </div>
-              )}
-              <!-- Category tag -->
+                </span>
+              </button>
+
               <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#ffd700]/10 border border-[#ffd700]/30 text-[#ffd700] text-xs font-medium backdrop-blur-sm">
-                {track.tag}
+                {release.isAlbum ? `${release.trackCount} ${t.tracks}` : t.singleLabel}
               </div>
             </div>
 
-            <!-- Content -->
-            <div class="p-4">
-              <h2 class="font-comfortaa text-white font-bold text-sm mb-2 leading-snug group-hover:text-[#ffd700] transition-colors duration-200 line-clamp-2">
-                {track.title}
-              </h2>
-              <p class="text-white/45 text-xs leading-relaxed line-clamp-2">
-                {track.description}
+            <!-- Contenu -->
+            <div class="p-4 flex flex-col flex-1">
+              <h3 class="font-comfortaa text-white font-bold text-sm mb-1.5 leading-snug group-hover:text-[#ffd700] transition-colors duration-200 line-clamp-2">
+                {release.title}
+              </h3>
+              <p class="text-white/40 text-xs mb-3">
+                {release.genre} · {dateFormatter.format(new Date(release.releaseDate))}
               </p>
               <a
-                href={`https://www.youtube.com/watch?v=${track.videoId}`}
+                href={release.appleUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="mt-3 inline-flex items-center gap-1.5 text-white/35 hover:text-[#ffd700] text-xs transition-colors duration-200"
-                onclick="event.stopPropagation()"
+                class="mt-auto inline-flex items-center gap-1.5 text-white/35 hover:text-[#ffd700] text-xs transition-colors duration-200"
               >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                YouTube
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.994 6.124a9.23 9.23 0 0 0-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 0 0-1.877-.726 10.496 10.496 0 0 0-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026C4.786.07 4.043.15 3.34.428 2.004.958 1.04 1.88.475 3.208a4.98 4.98 0 0 0-.35 1.358c-.059.384-.1.769-.124 1.155-.008.098-.01.198-.01.297v13.944c0 .09.002.18.008.27.017.356.05.712.115 1.064.17.93.543 1.763 1.157 2.47a4.93 4.93 0 0 0 2.745 1.618c.484.11.977.163 1.472.178.13.005.26.007.39.007h13.028c.13 0 .259-.002.389-.007.518-.016 1.033-.076 1.534-.209a4.912 4.912 0 0 0 3.087-2.554c.287-.612.437-1.265.497-1.936.024-.268.036-.537.036-.807V6.142c0-.006-.001-.013-.001-.018zm-5.474 5.616a.747.747 0 0 1-.334.626l-7.26 4.605c-.155.098-.33.147-.502.147-.167 0-.337-.047-.488-.142a1.01 1.01 0 0 1-.487-.872V5.896c0-.36.196-.693.51-.866a.994.994 0 0 1 1.005.04l7.26 4.605a.749.749 0 0 1 .296.065z"/></svg>
+                {t.onApple}
               </a>
             </div>
           </article>
         ))}
       </div>
 
-      <!-- Channel CTA -->
-      <div class="text-center mt-16">
-        <a
-          href="https://www.youtube.com/@beikigai"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#ffd700] text-[#1a2535] font-comfortaa font-bold text-base hover:bg-[#ffd700]/90 transition-all duration-200 shadow-lg shadow-[#ffd700]/20 hover:shadow-[#ffd700]/40 hover:-translate-y-0.5"
+      <!-- CTA coaching -->
+      <div class="mt-20 rounded-3xl border border-white/10 bg-[#243044] p-8 md:p-12 text-center max-w-3xl mx-auto">
+        <h2 class="font-comfortaa text-2xl md:text-3xl font-bold text-white mb-4">{t.ctaTitle}</h2>
+        <p class="text-white/55 text-base leading-relaxed mb-8 max-w-xl mx-auto">{t.ctaText}</p>
+        <button
+          type="button"
+          data-open-booking
+          class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#9333ea] text-white font-comfortaa font-bold text-base hover:bg-[#9333ea]/90 transition-all duration-200 shadow-lg shadow-[#9333ea]/25 hover:shadow-[#9333ea]/40 hover:-translate-y-0.5"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          {t.watchAll}
-        </a>
+          {t.ctaButton}
+        </button>
+        <p class="mt-4">
+          <a href={pricingUrl} class="text-white/35 hover:text-[#ffd700] text-sm transition-colors duration-200">
+            {isFR ? 'Voir les tarifs' : 'See pricing'}
+          </a>
+        </p>
       </div>
     </div>
   </section>
-
-  <!-- Video lightbox -->
-  <div id="video-lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4 md:p-10">
-    <div class="absolute inset-0 bg-black/90 backdrop-blur-md" id="lightbox-backdrop"></div>
-    <div class="relative z-10 w-full max-w-4xl">
-      <button id="lightbox-close" class="absolute -top-12 right-0 text-white/60 hover:text-white transition-colors duration-200 flex items-center gap-2 text-sm">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        {isFR ? 'Fermer' : 'Close'}
-      </button>
-      <div class="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
-        <iframe
-          id="lightbox-iframe"
-          class="absolute inset-0 w-full h-full"
-          src=""
-          title="YouTube video"
-          frameborder="0"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </div>
-  </div>
 
   <Footer lang={lang} />
   <BookingModal lang={lang} />
@@ -436,6 +342,9 @@ const platformLinks = [
     33% { transform: translate(20px, -20px) scale(1.05); }
     66% { transform: translate(-15px, 10px) scale(0.95); }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .music-blob { animation: none; }
+  }
 
   .filter-btn {
     background: transparent;
@@ -452,62 +361,52 @@ const platformLinks = [
     color: #ffd700;
   }
 
-  .track-card.hidden-by-filter {
+  .release-card.hidden-by-filter {
     display: none;
   }
-
-  #video-lightbox.open {
-    display: flex;
+  .release-card.is-playing {
+    border-color: rgba(255,215,0,0.6);
   }
 </style>
 
 <script>
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.track-card');
+  const KIND_FILTERS = new Set(['albums', 'singles']);
 
-  filterBtns.forEach(btn => {
+  const filterBtns = document.querySelectorAll<HTMLElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.release-card');
+
+  filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const filter = (btn as HTMLElement).dataset.filter;
-      filterBtns.forEach(b => b.classList.remove('active'));
+      const filter = btn.dataset.filter ?? 'all';
+      filterBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
-      cards.forEach(card => {
-        const cat = (card as HTMLElement).dataset.category;
-        if (filter === 'all' || cat === filter) {
-          card.classList.remove('hidden-by-filter');
-        } else {
-          card.classList.add('hidden-by-filter');
-        }
+
+      cards.forEach((card) => {
+        const value = KIND_FILTERS.has(filter) ? card.dataset.kind : card.dataset.category;
+        const visible = filter === 'all' || value === filter;
+        card.classList.toggle('hidden-by-filter', !visible);
       });
     });
   });
 
-  const lightbox = document.getElementById('video-lightbox')!;
-  const iframe = document.getElementById('lightbox-iframe') as HTMLIFrameElement;
-  const closeBtn = document.getElementById('lightbox-close')!;
-  const backdrop = document.getElementById('lightbox-backdrop')!;
+  // Charger une sortie dans le lecteur Spotify.
+  // Les sorties dont l'ID d'album Spotify est inconnu retombent sur le lecteur artiste,
+  // qui expose l'intégralité du catalogue.
+  const player = document.getElementById('spotify-player') as HTMLIFrameElement | null;
+  const artistId = player?.dataset.artistId;
 
-  function openLightbox(videoId: string) {
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+  cards.forEach((card) => {
+    const btn = card.querySelector<HTMLButtonElement>('.play-btn');
+    if (!player || !btn) return;
 
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    iframe.src = '';
-    document.body.style.overflow = '';
-  }
-
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      const videoId = (card as HTMLElement).dataset.videoId;
-      if (videoId) openLightbox(videoId);
+    btn.addEventListener('click', () => {
+      const albumId = card.dataset.spotifyAlbum;
+      player.src = albumId
+        ? `https://open.spotify.com/embed/album/${albumId}?utm_source=generator&theme=0`
+        : `https://open.spotify.com/embed/artist/${artistId}?utm_source=generator&theme=0`;
+      cards.forEach((c) => c.classList.remove('is-playing'));
+      card.classList.add('is-playing');
+      player.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
-  });
-
-  closeBtn.addEventListener('click', closeLightbox);
-  backdrop.addEventListener('click', closeLightbox);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
   });
 </script>
