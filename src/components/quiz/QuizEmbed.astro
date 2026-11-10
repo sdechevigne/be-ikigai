@@ -269,10 +269,16 @@ const noJsMessage =
       const w = window as unknown as {
         plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void;
         gtag?: (...args: unknown[]) => void;
+        beTrack?: (type: string, name: string, params?: Record<string, unknown>) => void;
       };
       try {
         w.plausible?.(event, props ? { props } : undefined);
         w.gtag?.("event", event, props ?? {});
+        if (event === "email_submit") {
+          w.beTrack?.("track", "CompleteRegistration", { content_name: "quiz", ...props });
+        } else {
+          w.beTrack?.("trackCustom", "quiz_" + event.replace(/^quiz_/, ""), props);
+        }
       } catch {
         /* tracking best-effort */
       }

@@ -105,6 +105,7 @@ const t = labels[lang];
 
                 successMsg.classList.remove('hidden');
                 form.reset();
+                (window as any).beTrack?.('track', 'Lead', { content_name: 'contact_form' });
             } catch (error) {
                 console.error('Error submitting form:', error);
                 errorMsg.classList.remove('hidden');

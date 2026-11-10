@@ -351,6 +351,7 @@ const t = {
           tel,
           message: prefix,
         }).catch(() => { /* silent: we will retry on final submit */ });
+        window.beTrack?.('track', 'Lead', { content_name: 'booking_step1' });
       }
     });
     backBtn.addEventListener('click', goToStep1);
@@ -393,6 +394,7 @@ const t = {
         });
         successBox.classList.remove('hidden');
         form.reset();
+        window.beTrack?.('track', 'Schedule', { content_name: 'discovery_call' });
         setTimeout(close, 3000);
       } catch (err) {
         step2Error.textContent = t.error;
@@ -408,6 +410,7 @@ const t = {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         open();
+        window.beTrack?.('track', 'InitiateCheckout', { content_name: 'discovery_call' });
       });
     });
   })();

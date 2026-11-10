@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { Agentation } from 'agentation';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
 	title: string;
@@ -271,6 +272,7 @@ const siteName = "be-ikigai";
 	<slot name="head" />
 </head>
 <body class="overflow-x-hidden bg-blanc-coton text-bleu-crepuscule">
+	<CookieConsent lang={lang} />
 	<slot />
     <script>
         const observerOptions = {

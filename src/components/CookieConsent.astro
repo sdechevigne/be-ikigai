@@ -1,0 +1,132 @@
+---
+// Bandeau de consentement + Meta Pixel. Le pixel n'est chargé qu'après accord (CNIL).
+// Les événements envoyés avant le choix sont mis en file d'attente puis envoyés si accord, jetés si refus.
+// API globale : window.beTrack('track' | 'trackCustom', 'NomEvenement', { ...params })
+// Réouvrir le bandeau : n'importe quel élément avec [data-open-cookie-settings]
+interface Props {
+  lang?: string;
+}
+const { lang = 'fr' } = Astro.props;
+
+const t = {
+  fr: {
+    text: 'Nous utilisons des cookies de mesure publicitaire (Meta) pour comprendre d\'où viennent nos visiteurs et améliorer nos campagnes. Rien n\'est déposé sans votre accord.',
+    more: 'En savoir plus',
+    moreHref: '/confidentialite#cookies',
+    accept: 'Accepter',
+    refuse: 'Refuser',
+  },
+  en: {
+    text: 'We use advertising measurement cookies (Meta) to understand where our visitors come from and improve our campaigns. Nothing is set without your consent.',
+    more: 'Learn more',
+    moreHref: '/en/privacy#cookies',
+    accept: 'Accept',
+    refuse: 'Decline',
+  },
+}[lang === 'en' ? 'en' : 'fr'];
+
+const PIXEL_ID = '1779871979981521';
+---
+
+<script is:inline define:vars={{ PIXEL_ID }}>
+  (function () {
+    var KEY = 'be-consent';
+    var queue = [];
+    var loaded = false;
+
+    function getConsent() {
+      try { return localStorage.getItem(KEY); } catch (e) { return null; }
+    }
+
+    function loadPixel() {
+      if (loaded) return;
+      loaded = true;
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', PIXEL_ID);
+      window.fbq('track', 'PageView');
+      queue.forEach(function (args) { window.fbq.apply(null, args); });
+      queue = [];
+    }
+
+    window.beTrack = function (type, name, params) {
+      var args = params ? [type, name, params] : [type, name];
+      var consent = getConsent();
+      if (consent === 'granted') {
+        loadPixel();
+        window.fbq.apply(null, args);
+      } else if (consent !== 'denied') {
+        queue.push(args);
+      }
+    };
+
+    window.beConsent = function (value) {
+      try { localStorage.setItem(KEY, value); } catch (e) { /* ignore */ }
+      if (value === 'granted') {
+        loadPixel();
+      } else {
+        queue = [];
+        if (loaded) location.reload();
+      }
+    };
+
+    if (getConsent() === 'granted') loadPixel();
+
+    // ViewContent sur les pages d'offre
+    var path = location.pathname.replace(/\/$/, '') || '/';
+    if (/^(\/en)?\/(services|tarifs|pricing|quiz)(\/|$)/.test(path)) {
+      window.beTrack('track', 'ViewContent', { content_name: path });
+    }
+  })();
+</script>
+
+<div
+  id="cookie-banner"
+  role="dialog"
+  aria-live="polite"
+  aria-label="Cookies"
+  class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:max-w-md z-[60] bg-white text-[#2c3e50] rounded-2xl shadow-2xl border border-gray-200 p-5"
+>
+  <p class="text-sm leading-relaxed mb-4">
+    {t.text} <a href={t.moreHref} class="underline">{t.more}</a>
+  </p>
+  <div class="flex gap-3 justify-end">
+    <button type="button" data-consent="denied" class="px-4 py-2 text-sm font-semibold rounded-full border border-[#2c3e50] bg-[#2c3e50] text-white hover:opacity-90">
+      {t.refuse}
+    </button>
+    <button type="button" data-consent="granted" class="px-4 py-2 text-sm font-semibold rounded-full border border-[#2c3e50] bg-[#2c3e50] text-white hover:opacity-90">
+      {t.accept}
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    var current = null;
+    try { current = localStorage.getItem('be-consent'); } catch (e) { /* ignore */ }
+    if (!current) banner.classList.remove('hidden');
+
+    banner.querySelectorAll('[data-consent]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        banner.classList.add('hidden');
+        window.beConsent(btn.getAttribute('data-consent'));
+      });
+    });
+
+    document.addEventListener('click', function (e) {
+      var target = e.target;
+      if (target && target.closest && target.closest('[data-open-cookie-settings]')) {
+        e.preventDefault();
+        banner.classList.remove('hidden');
+      }
+    });
+  })();
+</script>
